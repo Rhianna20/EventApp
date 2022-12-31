@@ -28,34 +28,28 @@ router.post('/create/event', (req, res) => {
     
         }
       
-        res.json(event)
+        res.status(200).json(event)
     })
 })
 
 // GET Events
 
-router.get('/view/events', (req, res) => {
-    Event.find({}, (err, events) => {
-        if (err){
-            res.send('something went wrong :(')
-    
-        }
-        
-        res.json(events)
-          
-    })
+router.get('/view/events', async (req, res) => {
+        await Event.find()
+        .then(events => res.json(events))
+        .catch(err => res.status(404).json({noeventsfound: 'No Event found' }))
 
 })
 
 // GET Event by id
 
-router.get('/view/event/:id', (req, res) => {
+router.get('/view/event/:id', async (req, res) => {
 
-    Event.findById(req.params.id, (err, event) => {
+         Event.findById(req.params.id, (err, event) => {
         if (err){
             res.send(err)
         }
-        res.json(event)
+        res.status(200, "Event successfully returned").json(event)
     })
 
 
@@ -65,7 +59,7 @@ router.get('/view/event/:id', (req, res) => {
 
 router.put('/edit/event/:id', (req, res) =>{
 
-    Event.findOne({_id: req.params.id}, req.body, { new: true, useFindAndModify: false }, (err, event) => {
+   Event.findOne({_id: req.params.id}, req.body, { new: true, useFindAndModify: false }, (err, event) => {
         if (err){
             res.send(err)
         }
@@ -82,7 +76,7 @@ router.delete('/delete/event/:id', (req, res) => {
         if (err){
             res.send(err)
         }
-        res.json({ message: 'Successfully deleted event'})
+        res.json(event, { message: 'Successfully deleted event'})
     })
 })
 
