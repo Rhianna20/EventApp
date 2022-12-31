@@ -22,7 +22,6 @@ it('Return json containing list of all events', async () => {
   })
 });
 
-
 describe("PUT /edit/event/:id  Endpoints", () => {
   it('Return single json object of an event', async () => {
   jest.setTimeout(() => {
