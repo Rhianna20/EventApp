@@ -20,15 +20,14 @@ router.post('/create/event', (req, res) => {
     })
         
     
-    // })
-    
    newEvent.save((err, event) => {
         if (err){
-            res.send(err)
+            //fix
+           res.send(400)
     
         }
       
-        res.status(200).json(event)
+        res.json(event)
     })
 })
 
@@ -37,7 +36,7 @@ router.post('/create/event', (req, res) => {
 router.get('/view/events', async (req, res) => {
         await Event.find()
         .then(events => res.json(events))
-        .catch(err => res.status(404).json({noeventsfound: 'No Event found' }))
+        .catch(err => res.sendStatus(404).json({noeventsfound: 'No Event found' }))
 
 })
 
@@ -45,11 +44,11 @@ router.get('/view/events', async (req, res) => {
 
 router.get('/view/event/:id', async (req, res) => {
 
-         Event.findById(req.params.id, (err, event) => {
+         Event.findById(req.params._id, (err, event) => {
         if (err){
             res.send(err)
         }
-        res.status(200, "Event successfully returned").json(event)
+        res.json({ event, message:"Event successfully returned"})
     })
 
 
@@ -59,9 +58,9 @@ router.get('/view/event/:id', async (req, res) => {
 
 router.put('/edit/event/:id', (req, res) =>{
 
-   Event.findOne({_id: req.params.id}, req.body, { new: true, useFindAndModify: false }, (err, event) => {
+   Event.findOne({id: req.params.id}, req.body, { new: true, useFindAndModify: false }, (err, event) => {
         if (err){
-            res.send(err)
+            res.sendStatus(err)
         }
         res.json(event)
     })
@@ -72,12 +71,13 @@ router.put('/edit/event/:id', (req, res) =>{
 
 router.delete('/delete/event/:id', (req, res) => {
 
-    Event.remove({_id: req.params.id},  (err, event) => {
+        Event.remove({id: req.params.id},  (err, event) => {
         if (err){
-            res.send(err)
+            res.sendStatus(err)
         }
-        res.json(event, { message: 'Successfully deleted event'})
+        res.json( {event, message: 'Your event was successfully deleted.'})
     })
 })
 
 module.exports = router;
+

@@ -1,5 +1,6 @@
 
 const supertest = require('supertest');
+
 const app = require('../app')
 
 jest.useFakeTimers();
@@ -21,6 +22,14 @@ it('Return json containing list of all events', async () => {
     .expect(200)
   })
 });
+
+describe("'GET /view/event/:id", () => {
+  it("Return a json object by its id", async () => 
+await supertest(app).get("/view/event/:id")
+.expect(200)
+    )
+ 
+})
 
 describe("POST /create/event", () => {
   it("Save event to database", async () => {
@@ -47,13 +56,14 @@ describe("POST /create/event", () => {
  })
 })
 
-
 describe("PUT /edit/event/:id  Endpoints", () => {
   it('Return json containing list of all events', async () => {
   jest.setTimeout(() => {
     
   }, 6000);
    await supertest(app).put("/edit/event/:id")
+   .send({ event_name: "Refactor code", location: "Change of location"})
+
    .expect(200)
    .set('Accept', 'application/json')
    .then((response) => {
@@ -64,5 +74,20 @@ describe("PUT /edit/event/:id  Endpoints", () => {
      
     })
   });
+
+  describe("DELETE /delete/event/:id  Endpoints", () => {
+    it('Remove json object', async () => {
+      jest.setTimeout(() => {
+    
+      }, 9000);
+      const response = await supertest(app).delete("/delete/event/:id")
+     .set('Accept', 'application/json')
+     .send()
+     .expect(200)
+     expect(response.body.message).toEqual('Your event was successfully deleted.');
+      })
+    });
+
+  
   
 jest.useRealTimers();
