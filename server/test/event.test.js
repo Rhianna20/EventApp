@@ -1,11 +1,11 @@
 
-const supertest = require('supertest'); 
+const supertest = require('supertest');
 const app = require('../app')
-
 
 jest.useFakeTimers();
 
-// move into folder of file being tested
+
+
 
   beforeAll(() =>  app.connectDB)
   afterEach(() => app.clearDatabase)
@@ -22,8 +22,34 @@ it('Return json containing list of all events', async () => {
   })
 });
 
+describe("POST /create/event", () => {
+  it("Save event to database", async () => {
+  const response = await supertest(app)
+  .post("/create/event")
+  .set('Accept', 'application/json')
+  .send({ 
+    event_name: "popping jules",
+    location: "Hackney",
+    date: "10-02-25",
+    genre: "Pop",
+    price: 100,
+    created_by: "Rhi be"
+
+})
+  expect(response.statusCode).toBe(200) 
+  expect(response.headers['content-type']).toEqual(expect.stringContaining('json'))
+  expect(response.body.event_name).toBeDefined()
+  expect(response.body.location).toBeDefined()
+  expect(response.body.date).toBeDefined()
+  expect(response.body.genre).toBeDefined()
+  expect(response.body.price).toBeDefined()
+  expect(response.body.created_by).toBeDefined()
+ })
+})
+
+
 describe("PUT /edit/event/:id  Endpoints", () => {
-  it('Return single json object of an event', async () => {
+  it('Return json containing list of all events', async () => {
   jest.setTimeout(() => {
     
   }, 6000);
