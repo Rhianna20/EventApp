@@ -44,11 +44,11 @@ router.get('/view/events', async (req, res) => {
 
 router.get('/view/event/:id', async (req, res) => {
 
-         Event.findById(req.params._id, (err, event) => {
+         Event.findById(req.params.id, (err, event) => {
         if (err){
             res.send(err)
         }
-        res.json({ event, message:"Event successfully returned"})
+        res.json(event)
     })
 
 
@@ -73,7 +73,7 @@ router.delete('/delete/event/:id', (req, res) => {
 
         Event.remove({id: req.params.id},  (err, event) => {
         if (err){
-            res.sendStatus(err)
+            res.sendStatus(400)
         }
         res.json( {event, message: 'Your event was successfully deleted.'})
     })
