@@ -1,7 +1,7 @@
 const mongoose = require('mongoose')
 const config = require('config')
 const { MongoMemoryServer } = require('mongodb-memory-server')
-const c = require('config')
+
 
 
 const mongo =  MongoMemoryServer.create()
@@ -14,7 +14,7 @@ const connectDB = async () => {
   const mongooseOpts = {
     useUnifiedTopology: true,
   }
-  await mongoose.connect(uri, mongooseOpts)
+   mongoose.connect(uri, mongooseOpts)
   console.log('MongoDB is Connected...');
 }
 
@@ -54,4 +54,4 @@ const clearDatabase = async () => {
 module.exports = { 
   connectDB,
   closeDatabase,
-  clearDatabase};
+clearDatabase};

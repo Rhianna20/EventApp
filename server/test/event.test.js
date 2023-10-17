@@ -88,6 +88,18 @@ describe("PUT /edit/event/:id  Endpoints", () => {
       })
     });
 
-  
+    describe("Event form properity missing", () => {
+      it("Should return a 400 code", async () => {
+        jest.setTimeout(() => {
+        
+        }, 8000);
+        const response = await supertest(app).post("/create/event")
+       // .send({ newEvent: "eventName" })
+        expect(response.statusCode).toEqual(400)
+      })
+    })
   
 jest.useRealTimers();
+
+
+

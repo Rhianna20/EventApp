@@ -1,4 +1,5 @@
 const express = require('express');
+const { findById } = require('../model/event');
 const router = express.Router();
 
 const Event = require('../model/event')
@@ -22,13 +23,14 @@ router.post('/create/event', (req, res) => {
     
    newEvent.save((err, event) => {
         if (err){
-            //fix
-           res.send(400)
+            
+           res.sendStatus(400)
     
         }
       
         res.json(event)
     })
+  
 })
 
 // GET Events
@@ -40,44 +42,90 @@ router.get('/view/events', async (req, res) => {
 
 })
 
+
 // GET Event by id
 
 router.get('/view/event/:id', async (req, res) => {
 
-         Event.findById(req.params.id, (err, event) => {
-        if (err){
-            res.send(err)
-        }
-        res.json(event)
-    })
+    try {
+        const eventData = await Event.findById(req.params.id)
+        res.json(eventData)
+    } 
+    catch(err){
+        res.sendStatus(500).json({message: err.message})
+    }
 
-
+ 
 })
+
+router.get('/edit/event/:id', async (req, res) => {
+
+    try {
+        const eventData = await Event.findById(req.params.id)
+        res.json(eventData)
+    } 
+    catch(err){
+        res.sendStatus(500).json({message: err.message})
+    }
+
+ 
+})
+
+
+
+ // GET Edit Page
+
+//  router.get('/edit/event', async (req, res) => {
+//    const eventId =  await req.params.id
+//     .then(eventId => res.json(eventId))
+//     .catch(err => res.sendStatus(404).json({noeventsfound: 'No Event found' }))
+
+// })
+ 
+
+
 
 // EDIT Event
 
-router.put('/edit/event/:id', (req, res) =>{
+router.patch('/edit/event/:id', async (req, res) =>{
 
-   Event.findOne({id: req.params.id}, req.body, { new: true, useFindAndModify: false }, (err, event) => {
-        if (err){
-            res.sendStatus(err)
-        }
-        res.json(event)
-    })
+try{
+    const id = req.params.id
+    const eventData = req.body;
+    const editEvent = await Event.findByIdAndUpdate(id, eventData,
+         {new: true})
+
+    if (editEvent) {
+        res.send(editEvent)
+    } 
+}
+    catch {
+        res.sendStatus(500).json({error: 'something went wrong'})
+    }
 
 })
 
 // DELETE Event
 
-router.delete('/delete/event/:id', (req, res) => {
+router.delete('/delete/event/:id',  (req, res) => {
 
-        Event.remove({id: req.params.id},  (err, event) => {
+        Event.deleteOne({id: req.params.id},  (err, event) => {
         if (err){
             res.sendStatus(400)
         }
         res.json( {event, message: 'Your event was successfully deleted.'})
     })
 })
+
+const getEventId = (req, res) => {
+    Event.findById(req.params.id, (err, event) => {
+        if(err){
+            res.send(err)
+        }
+        res.json(event)
+    })
+}
+
 
 module.exports = router;
 
